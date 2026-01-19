@@ -57,4 +57,5 @@ module "ecs" {
   log_group_name     = module.logs.app_log_group_name
   cluster_name       = "${var.environment}-cluster"
   service_name       = "${var.environment}-service"
+  app_version        = var.image_tag
 }

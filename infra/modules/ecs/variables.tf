@@ -70,3 +70,7 @@ variable "task_role_arn" {
 variable "log_group_name" {
   type = string
 }
+
+variable "app_version" {
+  type = string
+}

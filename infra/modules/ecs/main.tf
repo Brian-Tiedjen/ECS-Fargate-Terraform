@@ -33,6 +33,12 @@ resource "aws_ecs_task_definition" "first_ecs_task" {
           awslogs-stream-prefix = var.environment
         }
       }
+      environment = [
+        {
+          name  = "APP_VERSION"
+          value = var.app_version
+        }
+      ]
     }
   ])
 }
