@@ -124,3 +124,4 @@ https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/e
 https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ecs_container_definition  
 https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ecs_service#deployment_circuit_breaker-block
 https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecr_lifecycle_policy
+https://terrateam.io/blog/terraform-drift-detection-github-actions

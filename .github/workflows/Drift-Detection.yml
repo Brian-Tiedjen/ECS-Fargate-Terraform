@@ -1,0 +1,99 @@
+name: Drift Detection
+
+on:
+  schedule:
+    - cron: "0 7 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  drift_check:
+    name: Drift Check (${{ matrix.environment }})
+    runs-on: ubuntu-latest
+    environment: ${{ matrix.environment }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - environment: prod
+            tf_workdir: infra/envs/prod
+            tf_var_file: production.tfvars
+    defaults:
+      run:
+        working-directory: ${{ matrix.tf_workdir }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: hashicorp/setup-terraform@v3
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Terraform Init
+        run: |
+          terraform init \
+            -backend-config="bucket=${{ vars.TF_BACKEND_BUCKET }}" \
+            -backend-config="key=${{ vars.TF_BACKEND_KEY }}" \
+            -backend-config="region=${{ vars.AWS_REGION }}" \
+            -backend-config="use_lockfile=true"
+
+      - name: Terraform Plan (drift check)
+        id: drift
+        run: |
+          set +e
+          terraform plan -no-color -detailed-exitcode -var-file="${{ matrix.tf_var_file }}" > plan.out
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          if [ $code -eq 1 ]; then
+            echo "Terraform plan failed"
+            cat plan.out
+            exit 1
+          fi
+
+      - name: Upload plan output
+        uses: actions/upload-artifact@v4
+        with:
+          name: drift-plan-${{ matrix.environment }}
+          path: ${{ matrix.tf_workdir }}/plan.out
+          if-no-files-found: error
+
+      - name: Open or update drift issue
+        if: ${{ steps.drift.outputs.exit_code == '2' && matrix.environment == 'prod' }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const envName = "${{ matrix.environment }}";
+            const title = `Drift detected in ${envName}`;
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: "open",
+              per_page: 100,
+            });
+            const existing = issues.find((issue) => issue.title === title);
+            const body = [
+              `Terraform detected drift in **${envName}**.`,
+              "",
+              "Check the latest workflow run for the full plan output.",
+            ].join("\n");
+            if (existing) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existing.number,
+                body,
+              });
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title,
+                body,
+              });
+            }
