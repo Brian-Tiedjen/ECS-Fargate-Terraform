@@ -44,7 +44,7 @@ module "ecs" {
   source             = "../../modules/ecs"
   environment        = var.environment
   region             = var.region
-  container_image    = "${module.ecr.repository_url}:${var.environment}"
+  container_image    = "${module.ecr.repository_url}:${var.image_tag}"
   container_port     = var.container_port
   desired_count      = var.desired_count
   task_cpu           = var.task_cpu
