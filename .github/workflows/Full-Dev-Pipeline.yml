@@ -50,6 +50,12 @@ jobs:
             -backend-config="region=${{ env.AWS_REGION }}" \
             -backend-config="use_lockfile=true"
 
+      - name: Import ECR repo if missing
+        run: |
+          if ! terraform state list | grep -q '^module\.ecr\.aws_ecr_repository\.app$'; then
+            terraform import -var-file=dev.tfvars module.ecr.aws_ecr_repository.app "${{ env.ECR_REPOSITORY }}"
+          fi
+
       - name: Terraform Format
         run: terraform fmt -check
 
