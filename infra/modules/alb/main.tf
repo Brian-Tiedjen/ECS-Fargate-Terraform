@@ -26,7 +26,7 @@ resource "aws_lb_target_group" "demo_alb_group" {
   protocol    = "HTTP"
   vpc_id      = var.vpc_id
   health_check {
-    path                = "/"
+    path                = "/health"
     protocol            = "HTTP"
     matcher             = "200-399"
     interval            = 30
