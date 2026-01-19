@@ -39,4 +39,4 @@ jobs:
             -backend-config="use_lockfile=true"
 
       - name: Terraform Destroy
-        run: terraform destroy -auto-approve -var-file=env/production.tfvars
+        run: terraform destroy -auto-approve -var-file=dev.tfvars
