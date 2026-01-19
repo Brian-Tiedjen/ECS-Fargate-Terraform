@@ -80,8 +80,10 @@ Primary cost drivers:
 
 ## CI/CD Workflow
 
-- Pull Requests: `terraform init / fmt / validate / plan`
-- Main branch: approved plan is applied, then image is built and pushed to ECR, then deploy runs
+- Workflows are run manually via `workflow_dispatch` for now
+- Dev: plan only (no apply)
+- Staging: plan + apply, then build/push and deploy
+- Prod: plan + apply, then build/push and deploy, then staging teardown
 - Terraform state stored remotely in S3; backend config is passed via `terraform init` in CI
 - Apply and deploy require GitHub environment approvals
 - CI includes an ECR bootstrap check: if the repo exists but is not in state, it is imported; if it does not exist, Terraform creates it on apply
