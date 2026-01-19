@@ -44,6 +44,11 @@ resource "aws_ecs_service" "service" {
   task_definition = aws_ecs_task_definition.first_ecs_task.arn
   desired_count   = var.desired_count
   launch_type     = "FARGATE"
+#auto rollback
+  deployment_circuit_breaker {
+    enable   = true
+    rollback = true
+  }
 
   network_configuration {
     subnets          = var.subnet_ids

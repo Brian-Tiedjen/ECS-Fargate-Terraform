@@ -17,7 +17,7 @@ The architecture separates public ingress from private compute, uses immutable c
 
 ## What it provisions today
 - VPC with public/private subnets, IGW, NAT gateway, route tables, and associations
-- Security groups for ALB and ECS service (ALB allowed from configured CIDRs, ECS only from ALB)
+- Security groups for ALB and ECS service 
 - Public Application Load Balancer, target group, HTTP listener, and health checks
 - CloudWatch alarms for ALB 5xx and unhealthy hosts
 - CloudWatch Log Group for app logs
@@ -59,3 +59,4 @@ https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_para
 https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecs_task_definition
 https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ecr_repository
 https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ecs_container_definition
+https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ecs_service#deployment_circuit_breaker-block

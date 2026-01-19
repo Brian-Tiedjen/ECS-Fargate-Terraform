@@ -17,6 +17,7 @@ module "security" {
   vpc_id           = module.vpc.vpc_id
   service_port     = var.service_port
   alb_ingress_port = var.alb_listener_port
+  alb_ingress_cidrs = var.alb_ingress_cidrs
 }
 
 module "alb" {
@@ -43,7 +44,7 @@ module "ecs" {
   source             = "../../modules/ecs"
   environment        = var.environment
   region             = var.region
-  container_image    = "${module.ecr.repository_url}:latest"
+  container_image    = "${module.ecr.repository_url}:${var.environment}"
   container_port     = var.container_port
   desired_count      = var.desired_count
   task_cpu           = var.task_cpu

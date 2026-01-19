@@ -33,6 +33,11 @@ variable "alb_listener_port" {
   default = 80
 }
 
+variable "alb_ingress_cidrs" {
+  type    = list(string)
+  default = ["0.0.0.0/0"]
+}
+
 variable "container_port" {
   type    = number
   default = 8000
