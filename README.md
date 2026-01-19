@@ -37,15 +37,9 @@ Centralized logging:
 
 ## Deployment Notes
 
-- Environment-specific deployment steps will be documented as staging and prod workflows mature.
+- Environment-specific deployment steps will be documented once staging/prod modules are added.
 Note: ALB deletion protection is disabled to allow clean teardown.  
 Note: The logs S3 bucket uses `force_destroy = true` for demo convenience.
-
-## Environment Structure
-
-- `infra/envs/dev`
-- `infra/envs/stage`
-- `infra/envs/prod`
 
 ## Outputs
 
@@ -54,6 +48,7 @@ Note: The logs S3 bucket uses `force_destroy = true` for demo convenience.
 - ECR repository URL: `ecr_repository_url`
 - ECS cluster name: `ecs_cluster_name`
 - ECS service name: `ecs_service_name`
+
 
 ## Costs (Estimated)
 
