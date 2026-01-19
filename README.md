@@ -100,6 +100,7 @@ The goals of modularization are to:
 - This is a personal learning and portfolio project.
 - Resources are created for demonstration purposes only.
 - Not intended for production or sensitive workloads.
+- ECR repositories use `force_delete = true` to allow clean teardown in demos.
 
 ## Issues/Resolved updates
 
