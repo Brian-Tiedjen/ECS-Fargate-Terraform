@@ -8,11 +8,11 @@ permissions:
   actions: read
 
 env:
-  AWS_REGION: us-east-2
+  AWS_REGION: ${{ vars.AWS_REGION }}
   TF_WORKDIR: infra/envs/dev
-  ECR_REPOSITORY: dev-app
-  TF_BACKEND_BUCKET: backup-bucket-for-terraform
-  TF_BACKEND_KEY: demo_ecs/dev/terraform.tfstate
+  ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY }}
+  TF_BACKEND_BUCKET: ${{ vars.TF_BACKEND_BUCKET }}
+  TF_BACKEND_KEY: ${{ vars.TF_BACKEND_KEY }}
 
 jobs:
   plan:

@@ -2,17 +2,23 @@ name: Prod Pipeline (Plan -> Apply -> Build -> Deploy -> Teardown Staging)
 
 on:
   workflow_dispatch:
+    inputs:
+      confirm_teardown_staging:
+        description: "Destroy staging after prod deploy"
+        required: true
+        type: boolean
+        default: false
 
 permissions:
   contents: read
   actions: read
 
 env:
-  AWS_REGION: us-east-2
+  AWS_REGION: ${{ vars.AWS_REGION }}
   TF_WORKDIR: infra/envs/prod
-  ECR_REPOSITORY: production-app
-  TF_BACKEND_BUCKET: backup-bucket-for-terraform
-  TF_BACKEND_KEY: demo_ecs/prod/terraform.tfstate
+  ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY }}
+  TF_BACKEND_BUCKET: ${{ vars.TF_BACKEND_BUCKET }}
+  TF_BACKEND_KEY: ${{ vars.TF_BACKEND_KEY }}
 
 jobs:
   plan:
@@ -185,6 +191,7 @@ jobs:
     name: Teardown Staging
     runs-on: ubuntu-latest
     needs: [deploy]
+    if: ${{ inputs.confirm_teardown_staging }}
     environment: staging
     defaults:
       run:

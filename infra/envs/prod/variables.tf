@@ -1,6 +1,6 @@
 variable "environment" {
   type    = string
-  default = "production"
+  default = "prod"
 }
 
 variable "region" {

@@ -1,6 +1,6 @@
 vpc_cidr = "10.2.0.0/16"
 
-environment = "production"
+environment = "prod"
 
 public_subnets = {
   public-az1 = {
