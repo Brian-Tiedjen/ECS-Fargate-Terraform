@@ -13,10 +13,10 @@ module "logs" {
 }
 
 module "security" {
-  source           = "../../modules/security"
-  vpc_id           = module.vpc.vpc_id
-  service_port     = var.service_port
-  alb_ingress_port = var.alb_listener_port
+  source            = "../../modules/security"
+  vpc_id            = module.vpc.vpc_id
+  service_port      = var.service_port
+  alb_ingress_port  = var.alb_listener_port
   alb_ingress_cidrs = var.alb_ingress_cidrs
 }
 
