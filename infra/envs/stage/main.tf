@@ -37,7 +37,7 @@ module "iam" {
 module "ecr" {
   source          = "../../modules/ecr"
   environment     = var.environment
-  repository_name = "${var.environment}-app"
+  repository_name = "${local.name_prefix}-app"
 }
 
 module "ecs" {
@@ -55,7 +55,7 @@ module "ecs" {
   execution_role_arn = module.iam.task_execution_role_arn
   task_role_arn      = module.iam.task_role_arn
   log_group_name     = module.logs.app_log_group_name
-  cluster_name       = "${var.environment}-cluster"
-  service_name       = "${var.environment}-service"
+  cluster_name       = "${local.name_prefix}-cluster"
+  service_name       = "${local.name_prefix}-service"
   app_version        = var.image_tag
 }
