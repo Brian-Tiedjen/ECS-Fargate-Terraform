@@ -1,6 +1,6 @@
 #Create ECS Cluster
 resource "aws_ecs_cluster" "ecs_cluster" {
-  name = "${var.cluster_name}-cluster"
+  name = "${var.cluster_name}"
   tags = {
     environment = var.environment
   }
