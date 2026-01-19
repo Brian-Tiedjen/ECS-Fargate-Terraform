@@ -52,8 +52,15 @@ jobs:
 
       - name: Import ECR repo if missing
         run: |
-          if ! terraform state list | grep -q '^module\.ecr\.aws_ecr_repository\.app$'; then
+          if terraform state list | grep -q '^module\.ecr\.aws_ecr_repository\.app$'; then
+            echo "ECR repo already tracked in state."
+            exit 0
+          fi
+
+          if aws ecr describe-repositories --repository-names "${{ env.ECR_REPOSITORY }}" >/dev/null 2>&1; then
             terraform import -var-file=dev.tfvars module.ecr.aws_ecr_repository.app "${{ env.ECR_REPOSITORY }}"
+          else
+            echo "ECR repo not found; it will be created by apply."
           fi
 
       - name: Terraform Format
