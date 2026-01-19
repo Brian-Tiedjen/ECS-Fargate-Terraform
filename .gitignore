@@ -1,4 +1,5 @@
-.terraform/providers/registry.terraform.io/hashicorp/aws/6.27.0/linux_amd64/LICENSE.txt
-.terraform/providers/registry.terraform.io/hashicorp/aws/6.27.0/linux_amd64/terraform-provider-aws_v6.27.0_x5
-.terraform/providers/registry.terraform.io/hashicorp/random/3.5.1/linux_amd64/terraform-provider-random_v3.5.1_x5
-.terraform.lock.hcl
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log

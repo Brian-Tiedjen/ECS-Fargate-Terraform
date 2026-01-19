@@ -1,7 +1,6 @@
 #Create ECS Cluster
 resource "aws_ecs_cluster" "ecs_cluster" {
-  name = var.cluster_name
-
+  name = "${var.cluster_name}-cluster"
   tags = {
     environment = var.environment
   }
@@ -58,5 +57,4 @@ resource "aws_ecs_service" "service" {
     container_port   = var.container_port
   }
 
-  depends_on = [aws_ecs_task_definition.task]
 }

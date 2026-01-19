@@ -13,7 +13,21 @@ The architecture separates public ingress from private compute, uses immutable c
 - Health-check-driven deployments and rollbacks
 - Production-style networking boundaries
 - Declarative infrastructure with Terraform
--
+- Basic FastAPI app container (/, /health) to validate ALB routing
+
+## What it provisions today
+- VPC with public/private subnets, IGW, NAT gateway, route tables, and associations
+- Security groups for ALB and ECS service (ALB allowed from configured CIDRs, ECS only from ALB)
+- Public Application Load Balancer, target group, HTTP listener, and health checks
+- CloudWatch alarms for ALB 5xx and unhealthy hosts
+- CloudWatch Log Group for app logs
+- VPC Flow Logs (REJECT only) with IAM role
+- CloudTrail to S3
+- S3 log bucket with versioning, lifecycle, SSE, and public access blocked
+- ECR repository for app images (scan on push)
+- IAM task execution role and task role
+- ECS cluster, task definition, and Fargate service in private subnets (no public IP), registered to the ALB
+
 
 ## Issues
 -
@@ -21,9 +35,10 @@ The architecture separates public ingress from private compute, uses immutable c
 -
 
 ## Future Updates
--
--
--
+- Build/push the container image into ECR
+- HTTPS/TLS termination and certificates on the ALB
+- Autoscaling policies for the ECS service
+- CI/CD pipeline or release automation
 
 
 ## Notes and Documentation

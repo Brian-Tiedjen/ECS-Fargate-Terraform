@@ -7,13 +7,11 @@ variable "region" {
 }
 
 variable "cluster_name" {
-  type    = string
-  default = null
+  type = string
 }
 
 variable "service_name" {
-  type    = string
-  default = null
+  type = string
 }
 
 variable "container_name" {
