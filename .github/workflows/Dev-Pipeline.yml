@@ -1,0 +1,72 @@
+name: Dev Plan (no apply)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+env:
+  AWS_REGION: ${{ vars.AWS_REGION }}
+  TF_WORKDIR: infra/envs/dev
+  ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY }}
+  TF_BACKEND_BUCKET: ${{ vars.TF_BACKEND_BUCKET }}
+  TF_BACKEND_KEY: ${{ vars.TF_BACKEND_KEY }}
+
+jobs:
+  plan:
+    name: Terraform Plan (dev)
+    runs-on: ubuntu-latest
+    environment: dev
+    defaults:
+      run:
+        working-directory: ${{ env.TF_WORKDIR }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: hashicorp/setup-terraform@v3
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Terraform Init
+        run: |
+          terraform init \
+            -backend-config="bucket=${{ env.TF_BACKEND_BUCKET }}" \
+            -backend-config="key=${{ env.TF_BACKEND_KEY }}" \
+            -backend-config="region=${{ env.AWS_REGION }}" \
+            -backend-config="use_lockfile=true"
+
+      - name: Import ECR repo if missing
+        run: |
+          if terraform state list | grep -q '^module\.ecr\.aws_ecr_repository\.app$'; then
+            echo "ECR repo already tracked in state."
+            exit 0
+          fi
+
+          if aws ecr describe-repositories --repository-names "${{ env.ECR_REPOSITORY }}" >/dev/null 2>&1; then
+            terraform import -var-file=dev.tfvars module.ecr.aws_ecr_repository.app "${{ env.ECR_REPOSITORY }}"
+          else
+            echo "ECR repo not found; it will be created by apply."
+          fi
+
+      - name: Terraform Format
+        run: terraform fmt -check
+
+      - name: Terraform Validate
+        run: terraform validate
+
+      # Save plan to a file for exact apply later
+      - name: Terraform Plan (save)
+        run: terraform plan -no-color -out=tfplan-infra -var-file=dev.tfvars
+
+      - name: Upload infra plan artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: tfplan-infra-dev
+          path: ${{ env.TF_WORKDIR }}/tfplan-infra
+          if-no-files-found: error
