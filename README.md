@@ -40,6 +40,8 @@ Centralized logging:
 - Environment-specific deployment steps will be documented once staging/prod modules are added.
 Note: ALB deletion protection is disabled to allow clean teardown.  
 Note: The logs S3 bucket uses `force_destroy = true` for demo convenience.
+Note: ECR repositories use `force_delete = true` to allow clean teardown in demos.
+
 
 ## Outputs
 
