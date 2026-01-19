@@ -32,7 +32,7 @@ The architecture separates public ingress from private compute, uses immutable c
 
 
 ## Issues
--
+- Deploy Updates fail for git action
 -
 -
 
@@ -40,7 +40,6 @@ The architecture separates public ingress from private compute, uses immutable c
 - Build/push the container image into ECR
 - HTTPS/TLS termination and certificates on the ALB
 - Autoscaling policies for the ECS service
-- CI/CD pipeline or release automation
 
 
 ## Notes and Documentation
