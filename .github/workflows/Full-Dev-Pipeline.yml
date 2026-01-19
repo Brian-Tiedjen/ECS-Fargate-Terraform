@@ -27,6 +27,7 @@ jobs:
   plan:
     name: Terraform Plan (dev)
     runs-on: ubuntu-latest
+    environment: dev
     defaults:
       run:
         working-directory: ${{ env.TF_WORKDIR }}
