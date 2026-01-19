@@ -1,13 +1,7 @@
-name: Prod Pipeline (Plan -> Apply -> Build -> Deploy -> Teardown Staging)
+name: Prod Pipeline (Plan -> Apply -> Build -> Deploy)
 
 on:
   workflow_dispatch:
-    inputs:
-      confirm_teardown_staging:
-        description: "Destroy staging after prod deploy"
-        required: true
-        type: boolean
-        default: false
 
 permissions:
   contents: read
@@ -186,34 +180,3 @@ jobs:
 
       - name: Terraform Apply (deploy from saved plan)
         run: terraform apply -auto-approve tfplan-deploy
-
-  teardown_staging:
-    name: Teardown Staging
-    runs-on: ubuntu-latest
-    needs: [deploy]
-    if: ${{ inputs.confirm_teardown_staging }}
-    environment: staging
-    defaults:
-      run:
-        working-directory: infra/envs/stage
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: hashicorp/setup-terraform@v3
-
-      - uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
-
-      - name: Terraform Init (staging)
-        run: |
-          terraform init \
-            -backend-config="bucket=${{ env.TF_BACKEND_BUCKET }}" \
-            -backend-config="key=demo_ecs/stage/terraform.tfstate" \
-            -backend-config="region=${{ env.AWS_REGION }}" \
-            -backend-config="use_lockfile=true"
-
-      - name: Terraform Destroy (staging)
-        run: terraform destroy -auto-approve -var-file=staging.tfvars

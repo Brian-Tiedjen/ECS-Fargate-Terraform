@@ -1,20 +1,25 @@
-name: Destroy
+name: Destroy Prod
 
 on:
-
   workflow_dispatch:
 
 permissions:
   contents: read
 
+env:
+  AWS_REGION: ${{ vars.AWS_REGION }}
+  TF_WORKDIR: infra/envs/prod
+  TF_BACKEND_BUCKET: ${{ vars.TF_BACKEND_BUCKET }}
+  TF_BACKEND_KEY: ${{ vars.TF_BACKEND_KEY }}
+
 jobs:
   terraform:
     runs-on: ubuntu-latest
-    environment: dev
+    environment: prod
 
     defaults:
       run:
-        working-directory: infra/envs/dev
+        working-directory: ${{ env.TF_WORKDIR }}
 
     steps:
       - name: Checkout
@@ -28,15 +33,15 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-2
+          aws-region: ${{ env.AWS_REGION }}
 
-      - name: Terraform Init 
+      - name: Terraform Init
         run: |
           terraform init \
-            -backend-config="bucket=backup-bucket-for-terraform" \
-            -backend-config="key=demo_ecs/dev/terraform.tfstate" \
-            -backend-config="region=us-east-2" \
+            -backend-config="bucket=${{ env.TF_BACKEND_BUCKET }}" \
+            -backend-config="key=${{ env.TF_BACKEND_KEY }}" \
+            -backend-config="region=${{ env.AWS_REGION }}" \
             -backend-config="use_lockfile=true"
 
       - name: Terraform Destroy
-        run: terraform destroy -auto-approve -var-file=dev.tfvars
+        run: terraform destroy -auto-approve -var-file=production.tfvars
