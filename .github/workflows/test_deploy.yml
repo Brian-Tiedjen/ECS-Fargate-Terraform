@@ -46,4 +46,4 @@ jobs:
         run: terraform validate
 
       - name: Terraform Plan (Dev)
-        run: terraform plan -no-color -var-file=envs/dev.tfvars
+        run: terraform plan -no-color -var-file=dev.tfvars
