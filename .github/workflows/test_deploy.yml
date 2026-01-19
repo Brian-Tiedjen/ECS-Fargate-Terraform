@@ -15,7 +15,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: infra
+        working-directory: infra/envs/dev
 
     steps:
       - name: Checkout
