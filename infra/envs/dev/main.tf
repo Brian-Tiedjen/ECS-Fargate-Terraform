@@ -55,11 +55,6 @@ module "ecs" {
   execution_role_arn = module.iam.task_execution_role_arn
   task_role_arn      = module.iam.task_role_arn
   log_group_name     = module.logs.app_log_group_name
-  cluster_name       = local.cluster_name
-  service_name       = local.service_name
-}
-#adding locals to pass cluster name and service name 
-locals {
-  cluster_name = "${var.environment}-cluster"
-  service_name = "${var.environment}-service"
+  cluster_name       = "${var.environment}-cluster"
+  service_name       = "${var.environment}-service"
 }
