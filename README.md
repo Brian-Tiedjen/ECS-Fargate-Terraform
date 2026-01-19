@@ -50,6 +50,7 @@ Note: ECR repositories use `force_delete = true` to allow clean teardown in demo
 - ECR repository URL: `ecr_repository_url`
 - ECS cluster name: `ecs_cluster_name`
 - ECS service name: `ecs_service_name`
+- Stage/Prod ALB URLs: available via the same output names in `infra/envs/stage` and `infra/envs/prod`
 
 
 ## Costs (Estimated)
@@ -68,6 +69,7 @@ Primary cost drivers:
 
 - Single NAT Gateway (cost-aware, single-AZ dependency)
 - Single region deployment
+- Environments are isolated per VPC and state (dev/stage/prod use separate backends)
 - Logs bucket uses `force_destroy` and short retention for demo convenience
 - Health checks use `GET /` on the app
 
@@ -121,3 +123,4 @@ https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecs_
 https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ecr_repository  
 https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ecs_container_definition  
 https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ecs_service#deployment_circuit_breaker-block
+https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecr_lifecycle_policy
