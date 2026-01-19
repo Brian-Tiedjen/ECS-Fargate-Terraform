@@ -28,6 +28,11 @@ variable "service_port" {
   default = 8000
 }
 
+variable "alb_listener_port" {
+  type    = number
+  default = 80
+}
+
 variable "container_port" {
   type    = number
   default = 8000

@@ -24,6 +24,7 @@ The architecture separates public ingress from private compute, uses immutable c
 - VPC Flow Logs (REJECT only) with IAM role
 - CloudTrail to S3
 - S3 log bucket with versioning, lifecycle, SSE, and public access blocked
+- ALB access logs delivered to the S3 log bucket
 - ECR repository for app images (scan on push)
 - IAM task execution role and task role
 - ECS cluster, task definition, and Fargate service in private subnets (no public IP), registered to the ALB
@@ -42,6 +43,7 @@ The architecture separates public ingress from private compute, uses immutable c
 
 
 ## Notes and Documentation
+- The log bucket uses `force_destroy = true` for demo purposes
 
 # Reused Terraform modules
 

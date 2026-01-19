@@ -22,7 +22,7 @@ resource "aws_lb" "alb_public" {
 resource "aws_lb_target_group" "demo_alb_group" {
   name        = "${var.environment}-alb-target-group"
   target_type = "ip"
-  port        = var.service_port
+  port        = var.target_port
   protocol    = "HTTP"
   vpc_id      = var.vpc_id
   health_check {
@@ -44,7 +44,7 @@ resource "aws_lb_target_group" "demo_alb_group" {
 #Create ALB listener
 resource "aws_lb_listener" "alb_listener" {
   load_balancer_arn = aws_lb.alb_public.arn
-  port              = var.service_port
+  port              = var.listener_port
   protocol          = "HTTP"
 
   default_action {
