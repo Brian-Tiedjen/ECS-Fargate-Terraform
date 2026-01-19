@@ -34,7 +34,7 @@ jobs:
             -backend-config="bucket=backup-bucket-for-terraform" \
             -backend-config="key=demo_ecs/dev/terraform.tfstate" \
             -backend-config="region=us-east-2" \
-            -backend-config="use_lockfile=true"
+            -backend-config="use_lockfile=true" \
              
       - name: Terraform Format
         run: terraform fmt -check
