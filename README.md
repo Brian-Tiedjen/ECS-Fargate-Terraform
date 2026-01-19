@@ -28,7 +28,7 @@ The architecture separates public ingress from private compute, uses immutable c
 - ECR repository for app images (scan on push)
 - IAM task execution role and task role
 - ECS cluster, task definition, and Fargate service in private subnets (no public IP), registered to the ALB
-- CI/CD Test-Dev Deploy working
+- CI/CD Pipeline
 
 
 ## Issues
