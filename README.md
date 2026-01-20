@@ -89,6 +89,7 @@ Primary cost drivers:
 - Staging: plan + apply, then build/push and deploy
 - Prod: plan + apply, then build/push and deploy
 - Staging teardown runs as a separate workflow only after a successful prod deployment
+- Scheduled drift detection runs and opens an issue if drift is detected
 - Terraform state stored remotely in S3; backend config is passed via `terraform init` in CI
 - Apply and deploy require GitHub environment approvals
 - CI includes an ECR bootstrap check: if the repo exists but is not in state, it is imported; if it does not exist, Terraform creates it on apply
