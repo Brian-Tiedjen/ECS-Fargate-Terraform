@@ -60,8 +60,21 @@ jobs:
       - name: Terraform Validate
         run: terraform validate
 
+      - name: Install Conftest
+        run: |
+          CONFTEST_VERSION=0.56.0
+          curl -L "https://github.com/open-policy-agent/conftest/releases/download/v${CONFTEST_VERSION}/conftest_${CONFTEST_VERSION}_Linux_x86_64.tar.gz" -o conftest.tar.gz
+          tar -xzf conftest.tar.gz
+          sudo mv conftest /usr/local/bin/conftest
+
       - name: Terraform Plan (save)
         run: terraform plan -no-color -out=tfplan-infra -var-file=production.tfvars
+
+      - name: Terraform Show (plan JSON)
+        run: terraform show -json tfplan-infra > tfplan.json
+
+      - name: Policy Check (Conftest)
+        run: conftest test tfplan.json -p $GITHUB_WORKSPACE/policy/terraform
 
       - name: Upload infra plan artifact
         uses: actions/upload-artifact@v4
