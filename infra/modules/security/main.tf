@@ -1,6 +1,6 @@
 #Security Group for ECS service tasks
 resource "aws_security_group" "ecs_service_sg" {
-  name        = "ecs_service_sg"
+  name        = "${var.environment}-ecs-service-sg"
   description = "Security group for ECS service tasks"
   vpc_id      = var.vpc_id
 
@@ -20,7 +20,7 @@ resource "aws_security_group" "ecs_service_sg" {
 
 #Security Group for ALB
 resource "aws_security_group" "alb_public_group" {
-  name        = "alb_public_sg"
+  name        = "${var.environment}-alb-public-sg"
   description = "Security group for public ALB"
   vpc_id      = var.vpc_id
 

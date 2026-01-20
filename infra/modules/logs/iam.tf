@@ -1,5 +1,5 @@
 resource "aws_iam_role" "vpc_flow_role" {
-  name = "vpc-flow-logs-role"
+  name = "${var.environment}-vpc-flow-logs-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
