@@ -2,6 +2,10 @@ variable "vpc_id" {
   type = string
 }
 
+variable "environment" {
+  type = string
+}
+
 variable "service_port" {
   type    = number
   default = 80

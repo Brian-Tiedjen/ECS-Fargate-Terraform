@@ -21,6 +21,7 @@ Key capabilities include:
 - IAM task execution role and task role (least-privilege intent)
 - Remote Terraform state stored in S3 (configured in CI)
 - CI/CD integration with GitHub Actions (plan/apply/build/push/deploy)
+- Policy-as-code checks in CI via Conftest (OPA)
 - Module-based infrastructure design
 
 Centralized logging:
@@ -85,6 +86,7 @@ Primary cost drivers:
 ## CI/CD Workflow
 
 - Workflows are run manually via `workflow_dispatch` for now
+- Policy checks run on every plan using Conftest against the Terraform plan JSON
 - Dev: plan only (no apply)
 - Staging: plan + apply, then build/push and deploy
 - Prod: plan + apply, then build/push and deploy
