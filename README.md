@@ -38,7 +38,7 @@ Centralized logging:
 
 ## Deployment Notes
 
-- Environment-specific deployment steps will be documented once staging/prod modules are added.
+Environment-specific deployment steps live under `infra/envs/{dev,stage,prod}`.
 Note: ALB deletion protection is disabled to allow clean teardown.  
 Note: The logs S3 bucket uses `force_destroy = true` for demo convenience.
 Note: ECR repositories use `force_delete = true` to allow clean teardown in demos.
@@ -49,8 +49,6 @@ Note: ECR repositories use `force_delete = true` to allow clean teardown in demo
 - ALB URL: `alb_url`
 - ALB DNS name: `alb_dns_name`
 - ECR repository URL: `ecr_repository_url`
-- ECS cluster name: `ecs_cluster_name`
-- ECS service name: `ecs_service_name`
 - Stage/Prod ALB URLs: available via the same output names in `infra/envs/stage` and `infra/envs/prod`
 
 
