@@ -2,7 +2,8 @@
 resource "aws_ecs_cluster" "ecs_cluster" {
   name = "${var.cluster_name}"
   tags = {
-    environment = var.environment
+    Name        = var.cluster_name
+    Environment = var.environment
   }
 }
 #ECS Task Definition
@@ -41,6 +42,11 @@ resource "aws_ecs_task_definition" "first_ecs_task" {
       ]
     }
   ])
+
+  tags = {
+    Name        = "${var.environment}-task"
+    Environment = var.environment
+  }
 }
 
 #
@@ -68,4 +74,8 @@ resource "aws_ecs_service" "service" {
     container_port   = var.container_port
   }
 
+  tags = {
+    Name        = var.service_name
+    Environment = var.environment
+  }
 }

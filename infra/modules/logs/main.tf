@@ -12,7 +12,7 @@ resource "aws_cloudwatch_log_group" "app" {
 
 #CloudTrail logging
 resource "aws_cloudtrail" "demo_cloudtrail_logs" {
-  name                          = "demo-cloudtrail_logs"
+  name                          = "${var.environment}-cloudtrail"
   s3_bucket_name                = aws_s3_bucket.logs_bucket.bucket
   is_multi_region_trail         = true
   enable_log_file_validation    = true
@@ -50,7 +50,8 @@ resource "aws_flow_log" "vpc_rejects" {
 resource "aws_s3_bucket" "logs_bucket" {
   bucket = "${var.environment}-logs-bucket-${random_string.random_string_ec2.result}"
   tags = {
-    Name = "${var.environment}_logs_bucket"
+    Name        = "${var.environment}-logs-bucket"
+    Environment = var.environment
   }
   force_destroy = true
 

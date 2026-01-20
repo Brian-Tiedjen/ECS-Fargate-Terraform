@@ -57,7 +57,7 @@ resource "aws_lb_listener" "alb_listener" {
 
 #ALB 5xx errors alarm
 resource "aws_cloudwatch_metric_alarm" "alb_5xx_errors" {
-  alarm_name          = "alb-5xx-errors"
+  alarm_name          = "${var.environment}-alb-5xx-errors"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = 2
   metric_name         = "HTTPCode_Target_5XX_Count"
@@ -69,11 +69,16 @@ resource "aws_cloudwatch_metric_alarm" "alb_5xx_errors" {
   dimensions = {
     LoadBalancer = aws_lb.alb_public.arn_suffix
   }
+
+  tags = {
+    Name        = "${var.environment}-alb-5xx-errors"
+    Environment = var.environment
+  }
 }
 
 #ALB Unhealthy Host Count Alarm
 resource "aws_cloudwatch_metric_alarm" "alb_unhealthy_hosts" {
-  alarm_name          = "alb-unhealthy-hosts"
+  alarm_name          = "${var.environment}-alb-unhealthy-hosts"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = 2
   metric_name         = "UnhealthyHostCount"
@@ -84,5 +89,10 @@ resource "aws_cloudwatch_metric_alarm" "alb_unhealthy_hosts" {
   dimensions = {
     TargetGroup  = aws_lb_target_group.demo_alb_group.arn_suffix
     LoadBalancer = aws_lb.alb_public.arn_suffix
+  }
+
+  tags = {
+    Name        = "${var.environment}-alb-unhealthy-hosts"
+    Environment = var.environment
   }
 }
