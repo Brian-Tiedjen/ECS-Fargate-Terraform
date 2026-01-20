@@ -1,6 +1,7 @@
 name: Destroy-Staging
 
 on:
+  workflow_dispatch:
   workflow_run:
     workflows:
       - "Prod Pipeline (Plan -> Apply -> Build -> Deploy)"
