@@ -1,4 +1,4 @@
-package terraform
+package main
 
 resources[r] {
   some path, value
