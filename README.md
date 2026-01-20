@@ -70,7 +70,7 @@ Primary cost drivers:
 - Single region deployment
 - Environments are isolated per VPC and state (dev/stage/prod use separate backends)
 - Logs bucket uses `force_destroy` and short retention for demo convenience
-- Health checks use `GET /` on the app
+- Health checks use `GET /health` on the app
 
 ## Security Considerations
 
