@@ -128,3 +128,4 @@ https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecr_
 https://terrateam.io/blog/terraform-drift-detection-github-actions
 https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/appautoscaling_policy
 https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/appautoscaling_target
+https://cicube.io/workflow-hub/ad-m-github-push-action/

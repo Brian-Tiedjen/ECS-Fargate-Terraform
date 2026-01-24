@@ -48,6 +48,12 @@ module "ecs" {
   container_image    = "${module.ecr.repository_url}:${var.image_tag}"
   container_port     = var.container_port
   desired_count      = var.desired_count
+  min_capacity       = var.min_capacity
+  max_capacity       = var.max_capacity
+  cpu_target_value   = var.cpu_target_value
+  memory_target_value = var.memory_target_value
+  scale_in_cooldown  = var.scale_in_cooldown
+  scale_out_cooldown = var.scale_out_cooldown
   task_cpu           = var.task_cpu
   task_memory        = var.task_memory
   subnet_ids         = module.vpc.private_subnet_ids
