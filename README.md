@@ -95,6 +95,11 @@ Primary cost drivers:
 - Apply and deploy require GitHub environment approvals
 - CI includes an ECR bootstrap check: if the repo exists but is not in state, it is imported; if it does not exist, Terraform creates it on apply
 
+## Screen Shots
+- Staging needing approval in CI pipeline
+  <img width="701" height="232" alt="image" src="https://github.com/user-attachments/assets/e407871c-1751-4cc1-89e3-f71923c2367a" />
+
+
 ## Why Modules?
 
 The goals of modularization are to:
