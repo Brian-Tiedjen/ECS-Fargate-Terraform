@@ -2,6 +2,10 @@
 resource "aws_sns_topic" "alarms" {
   name = var.alarm_topic_name != "" ? var.alarm_topic_name : "${var.environment}-monitoring-alarms"
 
+  tags = {
+    Name        = "${var.environment}-monitoring-alarms"
+    Environment = var.environment
+  }
 }
 
 #Create SNS Email Subscriptions
@@ -10,6 +14,8 @@ resource "aws_sns_topic_subscription" "email_subscriptions" {
   protocol  = "email"
   topic_arn = aws_sns_topic.alarms.arn
   endpoint  = each.value
+
+  depends_on = [aws_sns_topic.alarms]
 }
 
 #Create ECS CPU Utilization Alarm
@@ -33,6 +39,10 @@ resource "aws_cloudwatch_metric_alarm" "ecs_cpu" {
   alarm_actions = [aws_sns_topic.alarms.arn]
   ok_actions    = [aws_sns_topic.alarms.arn]
 
+  tags = {
+    Name        = "${var.environment}-ecs-cpu-alarm"
+    Environment = var.environment
+  }
 }
 
 #Create ECS Memory Utilization Alarm
@@ -56,6 +66,10 @@ resource "aws_cloudwatch_metric_alarm" "ecs_memory" {
   alarm_actions = [aws_sns_topic.alarms.arn]
   ok_actions    = [aws_sns_topic.alarms.arn]
 
+  tags = {
+    Name        = "${var.environment}-ecs-memory-alarm"
+    Environment = var.environment
+  }
 }
 
 #Create ECS CloudWatch Dashboard
@@ -79,8 +93,14 @@ resource "aws_cloudwatch_dashboard" "main" {
           stat   = "Average"
           region = var.region
           title  = "ECS Service CPU and Memory Utilization"
-        }
+
+          tags = {
+            Name        = var.dashboard_name != "" ? var.dashboard_name : "${var.environment}-dashboard"
+            Environment = var.environment
+        } }
       }
     ]
   })
+
+
 }

@@ -21,7 +21,9 @@ Key capabilities include:
 - IAM task execution role and task role (least-privilege intent)
 - Remote Terraform state stored in S3 (configured in CI)
 - ECS service autoscaling (target tracking for CPU and memory)
+- Structured monitoring/alerting beyond basic ALB alarms
 - CI/CD integration with GitHub Actions (plan/apply/build/push/deploy)
+- GitHub Environments required reviewer gates (configured in GitHub UI settings)
 - Policy-as-code checks in CI via Conftest (OPA)
 - Module-based infrastructure design
 
@@ -95,8 +97,9 @@ Primary cost drivers:
 - Apply and deploy require GitHub environment approvals
 - CI includes an ECR bootstrap check: if the repo exists but is not in state, it is imported; if it does not exist, Terraform creates it on apply
 
-## Screen Shots
-- Staging needing approval in CI pipeline
+## Screenshots
+- Staging plan waiting for required reviewer approval in the CI pipeline
+This gate pauses apply and deploy until a human approves the environment.
   <img width="701" height="232" alt="image" src="https://github.com/user-attachments/assets/e407871c-1751-4cc1-89e3-f71923c2367a" />
 
 
@@ -113,13 +116,11 @@ The goals of modularization are to:
 - Resources are created for demonstration purposes only.
 - Not intended for production or sensitive workloads.
 
-## Issues/Resolved updates
--Staging Destroy
+## Issues
+- Staging Destroy
 
 ## Future Update Ideas
 
-- HTTPS/TLS termination and certificates on the ALB
-- Structured monitoring/alerting beyond basic ALB alarms
 
 ## Resources used
 
