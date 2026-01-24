@@ -49,7 +49,7 @@ resource "aws_ecs_task_definition" "first_ecs_task" {
   }
 }
 
-#
+#Create ECS Service
 resource "aws_ecs_service" "service" {
   name            = var.service_name
   cluster         = aws_ecs_cluster.ecs_cluster.id
@@ -81,6 +81,7 @@ resource "aws_ecs_service" "service" {
 }
 
 #Auto Scaling Configuration
+#Create ECS Auto Scaling Target
 resource "aws_appautoscaling_target" "ecs_service" {
   min_capacity       = var.min_capacity
   max_capacity       = var.max_capacity
@@ -91,6 +92,7 @@ resource "aws_appautoscaling_target" "ecs_service" {
   depends_on = [aws_ecs_service.service]
 }
 
+#Create ECS CPU Target Tracking Policy
 resource "aws_appautoscaling_policy" "ecs_cpu_target" {
   name               = "${var.service_name}-cpu"
   service_namespace  = aws_appautoscaling_target.ecs_service.service_namespace
@@ -110,6 +112,7 @@ resource "aws_appautoscaling_policy" "ecs_cpu_target" {
   depends_on = [aws_appautoscaling_target.ecs_service]
 }
 
+#Create ECS Memory Target Tracking Policy
 resource "aws_appautoscaling_policy" "ecs_memory_target" {
   name               = "${var.service_name}-memory"
   service_namespace  = aws_appautoscaling_target.ecs_service.service_namespace

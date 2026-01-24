@@ -1,6 +1,5 @@
 #Logging
-
-#CloudWatch Log Group for application logs
+#Create CloudWatch Log Group for application logs
 resource "aws_cloudwatch_log_group" "app" {
   name              = "/aws/app/${var.environment}-application-logs"
   retention_in_days = 30
@@ -10,7 +9,7 @@ resource "aws_cloudwatch_log_group" "app" {
   }
 }
 
-#CloudTrail logging
+#Create CloudTrail logging
 resource "aws_cloudtrail" "demo_cloudtrail_logs" {
   name                          = "${var.environment}-cloudtrail"
   s3_bucket_name                = aws_s3_bucket.logs_bucket.bucket
@@ -25,7 +24,7 @@ resource "aws_cloudtrail" "demo_cloudtrail_logs" {
   depends_on = [aws_s3_bucket_policy.logs_bucket_policy]
 }
 
-#VPC Flow Logs
+#Create VPC Flow Logs Log Group
 resource "aws_cloudwatch_log_group" "vpc_flow_logs" {
   name              = "vpc/${var.environment}-vpc-flow-logs"
   retention_in_days = 30
@@ -34,7 +33,7 @@ resource "aws_cloudwatch_log_group" "vpc_flow_logs" {
     Environment = var.environment
   }
 }
-#setting VPC flow logs to capture REJECT traffic only to reduce costs
+#Create VPC Flow Logs (REJECT only to reduce costs)
 resource "aws_flow_log" "vpc_rejects" {
   vpc_id          = var.vpc_id
   traffic_type    = "REJECT"
@@ -46,7 +45,7 @@ resource "aws_flow_log" "vpc_rejects" {
   }
 }
 
-#Create S3 bucket for backups with versioning enabled and private ACL Note:Using one bucket for ALB logs and CloudTrail logs for cost efficiency in demo
+#Create S3 Logs Bucket (ALB + CloudTrail)
 resource "aws_s3_bucket" "logs_bucket" {
   bucket = "${var.environment}-logs-bucket-${random_string.random_string_ec2.result}"
   tags = {
@@ -58,6 +57,7 @@ resource "aws_s3_bucket" "logs_bucket" {
 
 }
 
+#Block Public Access on Logs Bucket
 resource "aws_s3_bucket_public_access_block" "block_public_s3" {
   bucket                  = aws_s3_bucket.logs_bucket.id
   block_public_acls       = true
@@ -65,6 +65,7 @@ resource "aws_s3_bucket_public_access_block" "block_public_s3" {
   ignore_public_acls      = true
   restrict_public_buckets = true
 }
+#Enable Logs Bucket Versioning
 resource "aws_s3_bucket_versioning" "logs_bucket_versioning" {
   bucket = aws_s3_bucket.logs_bucket.id
 
@@ -73,6 +74,7 @@ resource "aws_s3_bucket_versioning" "logs_bucket_versioning" {
   }
 }
 
+#Create Logs Bucket Lifecycle Policy
 resource "aws_s3_bucket_lifecycle_configuration" "logs_bucket_lifecycle" {
   bucket = aws_s3_bucket.logs_bucket.id
 
@@ -90,7 +92,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "logs_bucket_lifecycle" {
   }
 }
 
-#random string resource for S3 bucket name uniqueness
+#Create Random String for Bucket Name Uniqueness
 resource "random_string" "random_string_ec2" {
   length  = 6
   special = false
@@ -98,6 +100,7 @@ resource "random_string" "random_string_ec2" {
   lower   = true
 }
 
+#Set Logs Bucket Ownership Controls
 resource "aws_s3_bucket_ownership_controls" "logs_bucket_ownership_controls" {
   bucket = aws_s3_bucket.logs_bucket.id
 
@@ -106,6 +109,7 @@ resource "aws_s3_bucket_ownership_controls" "logs_bucket_ownership_controls" {
   }
 }
 
+#Enable Logs Bucket Encryption
 resource "aws_s3_bucket_server_side_encryption_configuration" "logs_bucket_sse" {
   bucket = aws_s3_bucket.logs_bucket.id
 
@@ -117,7 +121,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "logs_bucket_sse" 
   }
 }
 
-#S3 Bucket Policy to allow ALB to write access logs and CloudTrail logging
+#Create S3 Bucket Policy for ALB and CloudTrail
 resource "aws_s3_bucket_policy" "logs_bucket_policy" {
   bucket = aws_s3_bucket.logs_bucket.id
 

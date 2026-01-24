@@ -33,7 +33,7 @@ resource "aws_subnet" "public_subnets" {
   }
 }
 
-#Create route tables for public and private subnets
+#Create Public Route Table
 resource "aws_route_table" "public_route_table" {
   vpc_id = aws_vpc.vpc.id
   route {
@@ -47,6 +47,7 @@ resource "aws_route_table" "public_route_table" {
   }
 }
 
+#Create Private Route Table
 resource "aws_route_table" "private_route_table" {
   vpc_id     = aws_vpc.vpc.id
   depends_on = [aws_nat_gateway.nat_gateway]
@@ -61,7 +62,7 @@ resource "aws_route_table" "private_route_table" {
   }
 }
 
-#Create route table associations
+#Create Public Route Table Associations
 resource "aws_route_table_association" "public" {
   depends_on     = [aws_subnet.public_subnets]
   route_table_id = aws_route_table.public_route_table.id
@@ -69,6 +70,7 @@ resource "aws_route_table_association" "public" {
   subnet_id      = each.value.id
 }
 
+#Create Private Route Table Associations
 resource "aws_route_table_association" "private" {
   depends_on     = [aws_subnet.private_subnets]
   route_table_id = aws_route_table.private_route_table.id
@@ -94,6 +96,7 @@ resource "aws_eip" "nat_gateway_eip" {
   }
 }
 
+#Create NAT Gateway
 resource "aws_nat_gateway" "nat_gateway" {
   allocation_id = aws_eip.nat_gateway_eip.id
   subnet_id     = aws_subnet.public_subnets[sort(keys(aws_subnet.public_subnets))[0]].id

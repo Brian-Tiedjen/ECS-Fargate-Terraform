@@ -1,4 +1,4 @@
-#
+#Create ECR Repository
 resource "aws_ecr_repository" "app" {
   name                 = var.repository_name
   image_tag_mutability = "IMMUTABLE"
@@ -14,6 +14,7 @@ resource "aws_ecr_repository" "app" {
   }
 }
 
+#Create ECR Lifecycle Policy
 resource "aws_ecr_lifecycle_policy" "app" {
   repository = aws_ecr_repository.app.name
 

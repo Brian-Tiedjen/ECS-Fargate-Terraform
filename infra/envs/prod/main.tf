@@ -1,3 +1,4 @@
+#Create VPC
 module "vpc" {
   source          = "../../modules/vpc"
   environment     = var.environment
@@ -6,12 +7,14 @@ module "vpc" {
   private_subnets = var.private_subnets
 }
 
+#Create Logging
 module "logs" {
   source      = "../../modules/logs"
   environment = var.environment
   vpc_id      = module.vpc.vpc_id
 }
 
+#Create Security Groups
 module "security" {
   source            = "../../modules/security"
   environment       = var.environment
@@ -21,6 +24,7 @@ module "security" {
   alb_ingress_cidrs = var.alb_ingress_cidrs
 }
 
+#Create Application Load Balancer
 module "alb" {
   source            = "../../modules/alb"
   environment       = var.environment
@@ -30,17 +34,20 @@ module "alb" {
   logs_bucket_name  = module.logs.alb_logs_bucket_name
 }
 
+#Create IAM Roles
 module "iam" {
   source      = "../../modules/iam"
   environment = var.environment
 }
 
+#Create ECR Repository
 module "ecr" {
   source          = "../../modules/ecr"
   environment     = var.environment
   repository_name = "${local.name_prefix}-app"
 }
 
+#Create ECS Service
 module "ecs" {
   source              = "../../modules/ecs"
   environment         = var.environment
