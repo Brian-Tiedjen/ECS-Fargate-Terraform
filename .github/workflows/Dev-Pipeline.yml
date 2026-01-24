@@ -1,7 +1,11 @@
 name: Dev Plan (no apply)
 
 on:
-  workflow_dispatch:
+ push:
+  branches:
+      -main
+ 
+ workflow_dispatch:
 
 permissions:
   contents: read
