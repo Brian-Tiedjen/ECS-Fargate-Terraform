@@ -15,15 +15,15 @@ resource "aws_sns_topic_subscription" "email_subscriptions" {
 #Create ECS CPU Utilization Alarm
 resource "aws_cloudwatch_metric_alarm" "ecs_cpu" {
   comparison_operator = "GreaterThanThreshold"
-  evaluation_periods = var.evaluation_periods
-  metric_name        = "CPUUtilization"
-  namespace          = "AWS/ECS"
-  period             = var.period_seconds
-  statistic          = "Average"
-  threshold          = var.cpu_high_threshold
-  alarm_name         = "${var.environment}-ecs-cpu-alarm"
-  alarm_description = "Alarm when ECS CPU exceeds ${var.cpu_high_threshold}%"
-  treat_missing_data = "notBreaching"
+  evaluation_periods  = var.evaluation_periods
+  metric_name         = "CPUUtilization"
+  namespace           = "AWS/ECS"
+  period              = var.period_seconds
+  statistic           = "Average"
+  threshold           = var.cpu_high_threshold
+  alarm_name          = "${var.environment}-ecs-cpu-alarm"
+  alarm_description   = "Alarm when ECS CPU exceeds ${var.cpu_high_threshold}%"
+  treat_missing_data  = "notBreaching"
 
   dimensions = {
     ClusterName = var.cluster_name
@@ -38,15 +38,15 @@ resource "aws_cloudwatch_metric_alarm" "ecs_cpu" {
 #Create ECS Memory Utilization Alarm
 resource "aws_cloudwatch_metric_alarm" "ecs_memory" {
   comparison_operator = "GreaterThanThreshold"
-  evaluation_periods = var.evaluation_periods
-  metric_name        = "MemoryUtilization"
-  namespace          = "AWS/ECS"
-  period             = var.period_seconds
-  statistic          = "Average"
-  threshold          = var.memory_high_threshold
-  alarm_name         = "${var.environment}-ecs-memory-alarm"
-  alarm_description = "Alarm when ECS Memory exceeds ${var.memory_high_threshold}%"
-  treat_missing_data = "notBreaching"
+  evaluation_periods  = var.evaluation_periods
+  metric_name         = "MemoryUtilization"
+  namespace           = "AWS/ECS"
+  period              = var.period_seconds
+  statistic           = "Average"
+  threshold           = var.memory_high_threshold
+  alarm_name          = "${var.environment}-ecs-memory-alarm"
+  alarm_description   = "Alarm when ECS Memory exceeds ${var.memory_high_threshold}%"
+  treat_missing_data  = "notBreaching"
 
   dimensions = {
     ClusterName = var.cluster_name
@@ -65,10 +65,10 @@ resource "aws_cloudwatch_dashboard" "main" {
   dashboard_body = jsonencode({
     widgets = [
       {
-        type = "metric"
-        x    = 0
-        y    = 0
-        width = 24
+        type   = "metric"
+        x      = 0
+        y      = 0
+        width  = 24
         height = 6
         properties = {
           metrics = [
