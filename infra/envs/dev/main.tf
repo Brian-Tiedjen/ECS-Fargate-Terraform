@@ -73,3 +73,20 @@ module "ecs" {
   service_name        = "${local.name_prefix}-service"
   app_version         = var.image_tag
 }
+
+#Create Monitoring
+module "monitoring" {
+  source                    = "../../modules/monitoring"
+  environment               = var.environment
+  region                    = var.region
+  cluster_name              = module.ecs.cluster_name
+  service_name              = module.ecs.service_name
+  alarm_topic_name          = var.alarm_topic_name
+  alarm_email_subscriptions = var.alarm_email_subscriptions
+  cpu_high_threshold        = var.cpu_high_threshold
+  memory_high_threshold     = var.memory_high_threshold
+  evaluation_periods        = var.evaluation_periods
+  period_seconds            = var.period_seconds
+  enable_dashboard          = var.enable_dashboard
+  dashboard_name            = var.dashboard_name
+}
