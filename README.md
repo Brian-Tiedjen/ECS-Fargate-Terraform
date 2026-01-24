@@ -109,12 +109,13 @@ The goals of modularization are to:
 
 ## Issues/Resolved updates
 
-- None currently. =)
+- None currently.
 
 ## Future Update Ideas
 
 - HTTPS/TLS termination and certificates on the ALB
 - Autoscaling policies for the ECS service
+- Structured monitoring/alerting beyond basic ALB alarms
 
 ## Resources used
 
@@ -125,3 +126,5 @@ https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/e
 https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ecs_service#deployment_circuit_breaker-block
 https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecr_lifecycle_policy
 https://terrateam.io/blog/terraform-drift-detection-github-actions
+https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/appautoscaling_policy
+https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/appautoscaling_target

@@ -42,21 +42,27 @@ module "ecr" {
 }
 
 module "ecs" {
-  source             = "../../modules/ecs"
-  environment        = var.environment
-  region             = var.region
-  container_image    = "${module.ecr.repository_url}:${var.image_tag}"
-  container_port     = var.container_port
-  desired_count      = var.desired_count
-  task_cpu           = var.task_cpu
-  task_memory        = var.task_memory
-  subnet_ids         = module.vpc.private_subnet_ids
-  security_group_ids = [module.security.ecs_service_sg_id]
-  target_group_arn   = module.alb.target_group_arn
-  execution_role_arn = module.iam.task_execution_role_arn
-  task_role_arn      = module.iam.task_role_arn
-  log_group_name     = module.logs.app_log_group_name
-  cluster_name       = "${local.name_prefix}-cluster"
-  service_name       = "${local.name_prefix}-service"
-  app_version        = var.image_tag
+  source              = "../../modules/ecs"
+  environment         = var.environment
+  region              = var.region
+  container_image     = "${module.ecr.repository_url}:${var.image_tag}"
+  container_port      = var.container_port
+  desired_count       = var.desired_count
+  min_capacity        = var.min_capacity
+  max_capacity        = var.max_capacity
+  cpu_target_value    = var.cpu_target_value
+  memory_target_value = var.memory_target_value
+  scale_in_cooldown   = var.scale_in_cooldown
+  scale_out_cooldown  = var.scale_out_cooldown
+  task_cpu            = var.task_cpu
+  task_memory         = var.task_memory
+  subnet_ids          = module.vpc.private_subnet_ids
+  security_group_ids  = [module.security.ecs_service_sg_id]
+  target_group_arn    = module.alb.target_group_arn
+  execution_role_arn  = module.iam.task_execution_role_arn
+  task_role_arn       = module.iam.task_role_arn
+  log_group_name      = module.logs.app_log_group_name
+  cluster_name        = "${local.name_prefix}-cluster"
+  service_name        = "${local.name_prefix}-service"
+  app_version         = var.image_tag
 }
