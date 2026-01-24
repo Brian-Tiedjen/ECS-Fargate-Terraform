@@ -1,5 +1,4 @@
-name: Destroy Prod
-
+name: Destroy
 on:
   workflow_dispatch:
 
