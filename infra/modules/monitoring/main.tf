@@ -1,6 +1,6 @@
 #Create SNS Topic for alarms
 resource "aws_sns_topic" "alarms" {
-  name = "${var.environment}-monitoring-alarms"
+  name = var.alarm_topic_name != "" ? var.alarm_topic_name : "${var.environment}-monitoring-alarms"
 
 }
 
@@ -18,9 +18,20 @@ resource "aws_cloudwatch_metric_alarm" "ecs_cpu" {
   evaluation_periods = var.evaluation_periods
   metric_name        = "CPUUtilization"
   namespace          = "AWS/ECS"
-  period = var.period_seconds
-  alarm_name = "${var.environment}-ecs-cpu-alarm"
+  period             = var.period_seconds
+  statistic          = "Average"
+  threshold          = var.cpu_high_threshold
+  alarm_name         = "${var.environment}-ecs-cpu-alarm"
   alarm_description = "Alarm when ECS CPU exceeds ${var.cpu_high_threshold}%"
+  treat_missing_data = "notBreaching"
+
+  dimensions = {
+    ClusterName = var.cluster_name
+    ServiceName = var.service_name
+  }
+
+  alarm_actions = [aws_sns_topic.alarms.arn]
+  ok_actions    = [aws_sns_topic.alarms.arn]
 
 }
 
@@ -30,15 +41,27 @@ resource "aws_cloudwatch_metric_alarm" "ecs_memory" {
   evaluation_periods = var.evaluation_periods
   metric_name        = "MemoryUtilization"
   namespace          = "AWS/ECS"
-  period = var.period_seconds
-  alarm_name = "${var.environment}-ecs-memory-alarm"
+  period             = var.period_seconds
+  statistic          = "Average"
+  threshold          = var.memory_high_threshold
+  alarm_name         = "${var.environment}-ecs-memory-alarm"
   alarm_description = "Alarm when ECS Memory exceeds ${var.memory_high_threshold}%"
+  treat_missing_data = "notBreaching"
+
+  dimensions = {
+    ClusterName = var.cluster_name
+    ServiceName = var.service_name
+  }
+
+  alarm_actions = [aws_sns_topic.alarms.arn]
+  ok_actions    = [aws_sns_topic.alarms.arn]
 
 }
 
 #Create ECS CloudWatch Dashboard
 resource "aws_cloudwatch_dashboard" "main" {
-  dashboard_name = "${var.dashboard_name}-${var.environment}-dashboard"
+  count          = var.enable_dashboard ? 1 : 0
+  dashboard_name = var.dashboard_name != "" ? var.dashboard_name : "${var.environment}-dashboard"
   dashboard_body = jsonencode({
     widgets = [
       {
@@ -48,7 +71,10 @@ resource "aws_cloudwatch_dashboard" "main" {
         width = 24
         height = 6
         properties = {
-          metrics = [["AWS/ECS", "CPUUtilization", "ClusterName", var.cluster_name, "ServiceName", var.service_name, "MemoryUtilization"]]
+          metrics = [
+            ["AWS/ECS", "CPUUtilization", "ClusterName", var.cluster_name, "ServiceName", var.service_name],
+            ["AWS/ECS", "MemoryUtilization", "ClusterName", var.cluster_name, "ServiceName", var.service_name]
+          ]
           period = var.period_seconds
           stat   = "Average"
           region = var.region
