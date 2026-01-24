@@ -20,6 +20,7 @@ Key capabilities include:
 - Deployment circuit breaker for safe rollbacks
 - IAM task execution role and task role (least-privilege intent)
 - Remote Terraform state stored in S3 (configured in CI)
+- ECS service autoscaling (target tracking for CPU and memory)
 - CI/CD integration with GitHub Actions (plan/apply/build/push/deploy)
 - Policy-as-code checks in CI via Conftest (OPA)
 - Module-based infrastructure design
