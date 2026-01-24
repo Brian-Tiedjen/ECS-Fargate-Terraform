@@ -101,10 +101,10 @@ Primary cost drivers:
 - Staging plan waiting for required reviewer approval in the CI pipeline
   <img width="701" height="232" alt="image" src="https://github.com/user-attachments/assets/e407871c-1751-4cc1-89e3-f71923c2367a" />
 
-- Prod Plan waiting for required reviewer approval in the CI pipeline.
+- Prod plan waiting for required reviewer approval in the CI pipeline
   <img width="701" height="232" alt="image" src="https://github.com/user-attachments/assets/a823e591-2de8-4517-a974-76d2478e4035" />
-  
-# - These gates pause the `terraform apply` and ECS deployment until a human approves the environment.
+
+These gates pause Terraform apply and ECS deployment until a human approves the environment.
 
 
 
@@ -125,7 +125,7 @@ The goals of modularization are to:
 - Staging Destroy
 
 ## Future Update Ideas
-
+- 
 
 ## Resources used
 
