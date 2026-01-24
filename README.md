@@ -108,8 +108,7 @@ The goals of modularization are to:
 - Not intended for production or sensitive workloads.
 
 ## Issues/Resolved updates
-
-- None currently.
+-Staging Destroy
 
 ## Future Update Ideas
 
