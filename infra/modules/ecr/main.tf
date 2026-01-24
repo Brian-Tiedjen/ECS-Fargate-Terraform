@@ -1,6 +1,6 @@
 #
 resource "aws_ecr_repository" "app" {
-  name = var.repository_name
+  name                 = var.repository_name
   image_tag_mutability = "IMMUTABLE"
   force_delete         = true
 
@@ -36,10 +36,10 @@ resource "aws_ecr_lifecycle_policy" "app" {
         rulePriority = 2
         description  = "Keep last 50 tagged images"
         selection = {
-          tagStatus   = "tagged"
+          tagStatus      = "tagged"
           tagPatternList = ["*"]
-          countType   = "imageCountMoreThan"
-          countNumber = 50
+          countType      = "imageCountMoreThan"
+          countNumber    = 50
         }
         action = {
           type = "expire"
