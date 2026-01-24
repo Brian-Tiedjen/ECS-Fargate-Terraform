@@ -114,7 +114,6 @@ The goals of modularization are to:
 ## Future Update Ideas
 
 - HTTPS/TLS termination and certificates on the ALB
-- Autoscaling policies for the ECS service
 - Structured monitoring/alerting beyond basic ALB alarms
 
 ## Resources used
