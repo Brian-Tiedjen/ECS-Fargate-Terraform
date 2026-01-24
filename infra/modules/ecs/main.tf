@@ -1,6 +1,6 @@
 #Create ECS Cluster
 resource "aws_ecs_cluster" "ecs_cluster" {
-  name = "${var.cluster_name}"
+  name = var.cluster_name
   tags = {
     Name        = var.cluster_name
     Environment = var.environment
@@ -56,7 +56,7 @@ resource "aws_ecs_service" "service" {
   task_definition = aws_ecs_task_definition.first_ecs_task.arn
   desired_count   = var.desired_count
   launch_type     = "FARGATE"
-#auto rollback
+  #auto rollback
   deployment_circuit_breaker {
     enable   = true
     rollback = true
@@ -126,5 +126,5 @@ resource "aws_appautoscaling_policy" "ecs_memory_target" {
     scale_out_cooldown = var.scale_out_cooldown
   }
 
- depends_on = [aws_appautoscaling_target.ecs_service]
+  depends_on = [aws_appautoscaling_target.ecs_service]
 }
