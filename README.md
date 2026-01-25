@@ -100,6 +100,7 @@ Primary cost drivers:
 - Terraform state stored remotely in S3; backend config is passed via `terraform init` in CI
 - Apply and deploy require GitHub environment approvals
 - CI includes an ECR bootstrap check: if the repo exists but is not in state, it is imported; if it does not exist, Terraform creates it on apply
+- Staging and production teardown workflows are separate and isolated
 
 ## Screenshots
 - Staging plan waiting for required reviewer approval in the CI pipeline
@@ -108,7 +109,7 @@ Primary cost drivers:
 - Prod plan waiting for required reviewer approval in the CI pipeline
   <img width="701" height="232" alt="image" src="https://github.com/user-attachments/assets/a823e591-2de8-4517-a974-76d2478e4035" />
 
-These gates pause Terraform apply and ECS deployment until a human approves the environment.
+-These gates pause Terraform apply and ECS deployment until a human approves the environment.
 
 
 
@@ -125,11 +126,6 @@ The goals of modularization are to:
 - Resources are created for demonstration purposes only.
 - Not intended for production or sensitive workloads.
 
-## Issues
-- Staging Destroy
-
-## Future Update Ideas
-- 
 
 ## Resources used
 

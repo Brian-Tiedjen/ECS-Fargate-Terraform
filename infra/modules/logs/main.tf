@@ -1,7 +1,7 @@
 #Logging
 #Create CloudWatch Log Group for application logs
 resource "aws_cloudwatch_log_group" "app" {
-  name              = "/aws/app/${var.environment}-application-logs"
+  name = "/aws/app/${var.environment}-application-logs"
   # CKV_AWS_66: log retention is set (90 days)
   retention_in_days = 90
   tags = {
@@ -47,7 +47,7 @@ resource "aws_cloudtrail" "demo_cloudtrail_logs" {
   enable_log_file_validation    = true
   include_global_service_events = true
   # CKV_AWS_252: publish CloudTrail notifications to SNS
-  sns_topic_name                = aws_sns_topic.cloudtrail.name
+  sns_topic_name = aws_sns_topic.cloudtrail.name
   tags = {
     Name        = "${var.environment}-cloudtrail"
     Environment = var.environment
@@ -58,7 +58,7 @@ resource "aws_cloudtrail" "demo_cloudtrail_logs" {
 
 #Create VPC Flow Logs Log Group
 resource "aws_cloudwatch_log_group" "vpc_flow_logs" {
-  name              = "vpc/${var.environment}-vpc-flow-logs"
+  name = "vpc/${var.environment}-vpc-flow-logs"
   # CKV_AWS_66: log retention is set (90 days)
   retention_in_days = 90
   tags = {
