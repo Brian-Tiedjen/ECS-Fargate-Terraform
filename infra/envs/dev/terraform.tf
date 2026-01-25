@@ -1,6 +1,6 @@
 #terraform settings block
 terraform {
-  required_version = ">= 1.14.3"
+  required_version = "~> 1.14.0"
 
   backend "s3" {}
 
@@ -12,11 +12,9 @@ terraform {
     random = {
       source  = "hashicorp/random"
       version = "~> 3.5.1"
-
     }
   }
 }
-
 
 #provider block and default tags
 provider "aws" {

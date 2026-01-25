@@ -22,6 +22,7 @@ Key capabilities include:
 - Remote Terraform state stored in S3 (configured in CI)
 - ECS service autoscaling (target tracking for CPU and memory)
 - ECS cluster container insights enabled
+- Container image hardening (non-root user + healthcheck)
 - Structured monitoring/alerting beyond basic ALB alarms
 - CI/CD integration with GitHub Actions (plan/apply/build/push/deploy)
 - GitHub Environments required reviewer gates (configured in GitHub UI settings)
@@ -86,6 +87,8 @@ Primary cost drivers:
 - Security groups enforce ALB → ECS traffic only
 - IAM roles scoped to ECS execution + app needs only
 - VPC Flow Logs capture rejected traffic for analysis
+- Default VPC security group is locked down
+- ALB drops invalid headers
 
 ## CI/CD Workflow
 
@@ -109,7 +112,7 @@ Primary cost drivers:
 - Prod plan waiting for required reviewer approval in the CI pipeline
   <img width="701" height="232" alt="image" src="https://github.com/user-attachments/assets/a823e591-2de8-4517-a974-76d2478e4035" />
 
--These gates pause Terraform apply and ECS deployment until a human approves the environment.
+These gates pause Terraform apply and ECS deployment until a human approves the environment.
 
 
 
