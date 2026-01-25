@@ -18,6 +18,55 @@ resource "aws_sns_topic_subscription" "email_subscriptions" {
   depends_on = [aws_sns_topic.alarms]
 }
 
+#Create ALB 5xx Errors Alarm
+resource "aws_cloudwatch_metric_alarm" "alb_5xx_errors" {
+  alarm_name          = "${var.environment}-alb-5xx-errors"
+  comparison_operator = "GreaterThanThreshold"
+  evaluation_periods  = 2
+  metric_name         = "HTTPCode_Target_5XX_Count"
+  namespace           = "AWS/ApplicationELB"
+  period              = 300
+  statistic           = "Sum"
+  threshold           = 1
+
+  dimensions = {
+    LoadBalancer = var.alb_arn_suffix
+  }
+
+  alarm_actions = [aws_sns_topic.alarms.arn]
+  ok_actions    = [aws_sns_topic.alarms.arn]
+
+  tags = {
+    Name        = "${var.environment}-alb-5xx-errors"
+    Environment = var.environment
+  }
+}
+
+#Create ALB Unhealthy Host Count Alarm
+resource "aws_cloudwatch_metric_alarm" "alb_unhealthy_hosts" {
+  alarm_name          = "${var.environment}-alb-unhealthy-hosts"
+  comparison_operator = "GreaterThanThreshold"
+  evaluation_periods  = 2
+  metric_name         = "UnhealthyHostCount"
+  namespace           = "AWS/ApplicationELB"
+  period              = 300
+  statistic           = "Average"
+  threshold           = 1
+
+  dimensions = {
+    TargetGroup  = var.target_group_arn_suffix
+    LoadBalancer = var.alb_arn_suffix
+  }
+
+  alarm_actions = [aws_sns_topic.alarms.arn]
+  ok_actions    = [aws_sns_topic.alarms.arn]
+
+  tags = {
+    Name        = "${var.environment}-alb-unhealthy-hosts"
+    Environment = var.environment
+  }
+}
+
 #Create ECS CPU Utilization Alarm
 resource "aws_cloudwatch_metric_alarm" "ecs_cpu" {
   comparison_operator = "GreaterThanThreshold"

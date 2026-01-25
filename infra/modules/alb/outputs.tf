@@ -17,6 +17,16 @@ output "alb_arn" {
   description = "ARN of the Application Load Balancer"
 }
 
+output "alb_arn_suffix" {
+  value       = aws_lb.alb_public.arn_suffix
+  description = "ARN suffix of the Application Load Balancer"
+}
+
 output "demo_alb_group_arns" {
   value = [aws_lb_target_group.demo_alb_group.arn]
+}
+
+output "target_group_arn_suffix" {
+  value       = aws_lb_target_group.demo_alb_group.arn_suffix
+  description = "ARN suffix of the ALB target group"
 }

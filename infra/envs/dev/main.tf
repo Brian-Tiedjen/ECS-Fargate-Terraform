@@ -81,6 +81,8 @@ module "monitoring" {
   region                    = var.region
   cluster_name              = module.ecs.cluster_name
   service_name              = module.ecs.service_name
+  alb_arn_suffix            = module.alb.alb_arn_suffix
+  target_group_arn_suffix   = module.alb.target_group_arn_suffix
   alarm_topic_name          = var.alarm_topic_name
   alarm_email_subscriptions = var.alarm_email_subscriptions
   cpu_high_threshold        = var.cpu_high_threshold

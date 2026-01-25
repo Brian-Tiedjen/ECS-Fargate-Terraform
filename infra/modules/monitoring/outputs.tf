@@ -5,5 +5,7 @@ output "alarm_topic_arn" {
 
 output "dashboard_name" {
   description = "CloudWatch dashboard name"
-  value       = "${var.dashboard_name}-${var.environment}-ecs-dashboard"
+  value = var.enable_dashboard ? (
+    var.dashboard_name != "" ? var.dashboard_name : "${var.environment}-dashboard"
+  ) : null
 }
