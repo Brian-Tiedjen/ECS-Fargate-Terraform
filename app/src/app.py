@@ -11,6 +11,12 @@ def root():
         "version": APP_VERSION
     }
 
+@app.get("/version")
+def version():
+    return {
+        "version": APP_VERSION
+    }
+
 @app.get("/health")
 def health():
     return {"status": "ok"}

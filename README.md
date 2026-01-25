@@ -58,6 +58,12 @@ Note: ECR repositories use `force_delete = true` to allow clean teardown in demo
 - ECR repository URL: `ecr_repository_url`
 - Stage/Prod ALB URLs: available via the same output names in `infra/envs/stage` and `infra/envs/prod`
 
+## App endpoints
+
+- `/` returns the current app version.
+- `/version` returns the current app version (explicit endpoint for demos).
+- `/health` returns a basic health status.
+
 
 ## Costs (Estimated)
 
