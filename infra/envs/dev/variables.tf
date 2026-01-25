@@ -127,8 +127,7 @@ variable "image_tag" {
   type    = string
   default = "dev"
 }
-#hard coding email for testing purposes
 variable "alarm_email_subscriptions" {
   type    = list(string)
-  default = ["briantiedjen@gmail.com"]
+  default = []
 }

@@ -23,3 +23,5 @@ private_subnets = {
     az   = "us-east-2b"
   }
 }
+
+alarm_email_subscriptions = ["briantiedjen@gmail.com"]
