@@ -16,12 +16,14 @@ module "logs" {
 
 #Create Security Groups
 module "security" {
-  source            = "../../modules/security"
-  environment       = var.environment
-  vpc_id            = module.vpc.vpc_id
-  service_port      = var.service_port
-  alb_ingress_port  = var.alb_listener_port
-  alb_ingress_cidrs = var.alb_ingress_cidrs
+  source             = "../../modules/security"
+  environment        = var.environment
+  vpc_id             = module.vpc.vpc_id
+  vpc_cidr           = var.vpc_cidr
+  vpc_endpoint_sg_id = module.vpc.vpc_endpoint_sg_id
+  service_port       = var.service_port
+  alb_ingress_port   = var.alb_listener_port
+  alb_ingress_cidrs  = var.alb_ingress_cidrs
 }
 
 #Create Application Load Balancer
