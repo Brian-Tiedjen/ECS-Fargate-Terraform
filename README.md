@@ -38,9 +38,9 @@ Centralized logging:
 
 ## Module Versions
 
-- Terraform version: 1.14.3
-- AWS provider version: 6.27.0
-- random provider version: 3.5.1
+- Terraform version: ~> 1.14.0
+- AWS provider version: ~> 6.27.0
+- random provider version: ~> 3.5.1
 
 ## Deployment Notes
 
@@ -98,13 +98,15 @@ Primary cost drivers:
 
 ## CI/CD Workflow
 
-- Workflows are run manually via `workflow_dispatch` for now
+- Dev plan runs on push to `main` and via `workflow_dispatch`
+- Staging/Prod pipelines run via `workflow_dispatch`
+- Drift detection runs on a schedule and via `workflow_dispatch`
 - Policy checks run on every plan using Conftest against the Terraform plan JSON
 - Static checks run on every plan using TFLint and Checkov
 - Dev: plan only (no apply)
 - Staging: plan + apply, then build/push and deploy
 - Prod: plan + apply, then build/push and deploy
-- Staging teardown runs as a separate workflow only after a successful prod deployment
+- Staging teardown runs as a separate workflow after a successful prod deployment, and can also be triggered manually
 - Scheduled drift detection runs and opens an issue if drift is detected
 - Terraform state stored remotely in S3; backend config is passed via `terraform init` in CI
 - Apply and deploy require GitHub environment approvals
