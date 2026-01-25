@@ -64,6 +64,18 @@ jobs:
       - name: Terraform Validate
         run: terraform validate
 
+      - name: Setup TFLint
+        uses: terraform-linters/setup-tflint@v4
+
+      - name: TFLint Init
+        run: tflint --init
+
+      - name: TFLint
+        run: tflint
+
+      - name: tfsec
+        uses: aquasecurity/tfsec-action@v1.0.3
+
       - name: Install Conftest
         run: |
           CONFTEST_VERSION=0.56.0

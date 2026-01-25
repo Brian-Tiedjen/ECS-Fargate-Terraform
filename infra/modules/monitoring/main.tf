@@ -142,14 +142,9 @@ resource "aws_cloudwatch_dashboard" "main" {
           stat   = "Average"
           region = var.region
           title  = "ECS Service CPU and Memory Utilization"
-
-          tags = {
-            Name        = var.dashboard_name != "" ? var.dashboard_name : "${var.environment}-dashboard"
-            Environment = var.environment
-        } }
+        }
       }
     ]
   })
-
 
 }
