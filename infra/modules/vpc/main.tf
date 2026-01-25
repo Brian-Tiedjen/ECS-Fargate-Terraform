@@ -7,6 +7,18 @@ resource "aws_vpc" "vpc" {
   }
 }
 
+data "aws_region" "current" {}
+
+locals {
+  private_subnet_cidrs = [for subnet in values(var.private_subnets) : subnet.cidr]
+  interface_endpoints = toset([
+    "ecr.api",
+    "ecr.dkr",
+    "logs",
+    "sts",
+  ])
+}
+
 #Deploy the private subnets
 resource "aws_subnet" "private_subnets" {
   for_each          = var.private_subnets
@@ -107,7 +119,57 @@ resource "aws_nat_gateway" "nat_gateway" {
   }
 }
 
-# CKV2_AWS_12: restrict default VPC security group
+#Create VPC Interface Endpoint Security Group
+resource "aws_security_group" "vpc_endpoints" {
+  name        = "${var.environment}-vpc-endpoints-sg"
+  description = "Security group for VPC interface endpoints"
+  vpc_id      = aws_vpc.vpc.id
+
+  ingress {
+    description = "Allow HTTPS from private subnets"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = local.private_subnet_cidrs
+  }
+
+  egress = []
+
+  tags = {
+    Name        = "${var.environment}-vpc-endpoints-sg"
+    Environment = var.environment
+  }
+}
+
+#Create VPC Interface Endpoints
+resource "aws_vpc_endpoint" "interface" {
+  for_each            = local.interface_endpoints
+  vpc_id              = aws_vpc.vpc.id
+  vpc_endpoint_type   = "Interface"
+  service_name        = "com.amazonaws.${data.aws_region.current.name}.${each.value}"
+  subnet_ids          = [for subnet in values(aws_subnet.private_subnets) : subnet.id]
+  private_dns_enabled = true
+  security_group_ids  = [aws_security_group.vpc_endpoints.id]
+
+  tags = {
+    Name        = "${var.environment}-${replace(each.value, ".", "-")}-vpce"
+    Environment = var.environment
+  }
+}
+
+#Create S3 Gateway Endpoint (for ECR layers)
+resource "aws_vpc_endpoint" "s3" {
+  vpc_id            = aws_vpc.vpc.id
+  vpc_endpoint_type = "Gateway"
+  service_name      = "com.amazonaws.${data.aws_region.current.name}.s3"
+  route_table_ids   = [aws_route_table.private_route_table.id]
+
+  tags = {
+    Name        = "${var.environment}-s3-vpce"
+    Environment = var.environment
+  }
+}
+
 resource "aws_default_security_group" "default" {
   vpc_id                 = aws_vpc.vpc.id
   revoke_rules_on_delete = true

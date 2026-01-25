@@ -1,7 +1,7 @@
 #Logging
 #Create CloudWatch Log Group for application logs
 resource "aws_cloudwatch_log_group" "app" {
-  name = "/aws/app/${var.environment}-application-logs"
+  name              = "/aws/app/${var.environment}-application-logs"
   retention_in_days = 90
   tags = {
     Name        = "${var.environment}-app-logs"
@@ -44,7 +44,7 @@ resource "aws_cloudtrail" "demo_cloudtrail_logs" {
   is_multi_region_trail         = true
   enable_log_file_validation    = true
   include_global_service_events = true
-  sns_topic_name = aws_sns_topic.cloudtrail.name
+  sns_topic_name                = aws_sns_topic.cloudtrail.name
   tags = {
     Name        = "${var.environment}-cloudtrail"
     Environment = var.environment
@@ -55,7 +55,7 @@ resource "aws_cloudtrail" "demo_cloudtrail_logs" {
 
 #Create VPC Flow Logs Log Group
 resource "aws_cloudwatch_log_group" "vpc_flow_logs" {
-  name = "vpc/${var.environment}-vpc-flow-logs"
+  name              = "vpc/${var.environment}-vpc-flow-logs"
   retention_in_days = 90
   tags = {
     Name        = "${var.environment}-vpc-flow-logs"
