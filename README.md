@@ -129,6 +129,12 @@ The goals of modularization are to:
 - Resources are created for demonstration purposes only.
 - Not intended for production or sensitive workloads.
 
+## Future Updates
+- GitHub Actions OIDC auth.
+- AWS Budgets + alert.
+- CloudWatch log metric filters + alarms.
+- Terraform‑docs + pre‑commit.
+
 
 ## Resources used
 
