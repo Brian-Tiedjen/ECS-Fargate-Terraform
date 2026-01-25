@@ -2,11 +2,40 @@
 #Create CloudWatch Log Group for application logs
 resource "aws_cloudwatch_log_group" "app" {
   name              = "/aws/app/${var.environment}-application-logs"
-  retention_in_days = 30
+  retention_in_days = 90
   tags = {
     Name        = "${var.environment}-app-logs"
     Environment = var.environment
   }
+}
+
+# Added to comply with CKV_AWS_252
+#Create CloudTrail SNS Topic
+resource "aws_sns_topic" "cloudtrail" {
+  name = "${var.environment}-cloudtrail-sns"
+  tags = {
+    Name        = "${var.environment}-cloudtrail-sns"
+    Environment = var.environment
+  }
+}
+
+#Allow CloudTrail to publish to SNS
+data "aws_iam_policy_document" "cloudtrail_sns" {
+  statement {
+    sid     = "AllowCloudTrailPublish"
+    effect  = "Allow"
+    actions = ["SNS:Publish"]
+    principals {
+      type        = "Service"
+      identifiers = ["cloudtrail.amazonaws.com"]
+    }
+    resources = [aws_sns_topic.cloudtrail.arn]
+  }
+}
+
+resource "aws_sns_topic_policy" "cloudtrail" {
+  arn    = aws_sns_topic.cloudtrail.arn
+  policy = data.aws_iam_policy_document.cloudtrail_sns.json
 }
 
 #Create CloudTrail logging
@@ -16,18 +45,19 @@ resource "aws_cloudtrail" "demo_cloudtrail_logs" {
   is_multi_region_trail         = true
   enable_log_file_validation    = true
   include_global_service_events = true
+  sns_topic_name                = aws_sns_topic.cloudtrail.name
   tags = {
     Name        = "${var.environment}-cloudtrail"
     Environment = var.environment
   }
 
-  depends_on = [aws_s3_bucket_policy.logs_bucket_policy]
+  depends_on = [aws_s3_bucket_policy.logs_bucket_policy, aws_sns_topic_policy.cloudtrail]
 }
 
 #Create VPC Flow Logs Log Group
 resource "aws_cloudwatch_log_group" "vpc_flow_logs" {
   name              = "vpc/${var.environment}-vpc-flow-logs"
-  retention_in_days = 30
+  retention_in_days = 90
   tags = {
     Name        = "${var.environment}-vpc-flow-logs"
     Environment = var.environment

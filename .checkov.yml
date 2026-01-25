@@ -1,13 +1,7 @@
-skip_checks:
-  - id: CKV_AWS_2
-    comment: HTTP-only ALB for demo; TLS termination is a future update.
-  - id: CKV_AWS_35
-    comment: CloudTrail KMS encryption skipped for demo.
-  - id: CKV_AWS_136
-    comment: ECR KMS encryption skipped for demo.
-  - id: CKV_AWS_150
-    comment: Deletion protection disabled to allow clean teardown.
-  - id: CKV_AWS_158
-    comment: CloudWatch Logs KMS encryption skipped for demo.
-  - id: CKV_AWS_338
-    comment: Log retention set to 90 days for demo.
+skip-check:
+  - CKV_AWS_2   # HTTP-only ALB for demo; TLS termination is a future update.
+  - CKV_AWS_35  # CloudTrail KMS encryption skipped for demo.
+  - CKV_AWS_136 # ECR KMS encryption skipped for demo.
+  - CKV_AWS_150 # Deletion protection disabled to allow clean teardown.
+  - CKV_AWS_158 # CloudWatch Logs KMS encryption skipped for demo.
+  - CKV_AWS_338 # Log retention set to 90 days for demo.
