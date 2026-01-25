@@ -8,3 +8,8 @@ output "public_subnet_ids" {
 output "private_subnet_ids" {
   value = [for subnet in values(aws_subnet.private_subnets) : subnet.id]
 }
+
+output "vpc_endpoint_sg_id" {
+  value       = aws_security_group.vpc_endpoints.id
+  description = "Security group ID for VPC interface endpoints"
+}

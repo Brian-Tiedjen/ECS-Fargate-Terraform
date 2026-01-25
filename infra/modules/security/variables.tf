@@ -6,6 +6,14 @@ variable "environment" {
   type = string
 }
 
+variable "vpc_cidr" {
+  type = string
+}
+
+variable "vpc_endpoint_sg_id" {
+  type = string
+}
+
 variable "service_port" {
   type    = number
   default = 80
