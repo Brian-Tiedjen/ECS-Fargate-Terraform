@@ -21,6 +21,7 @@ module "security" {
   vpc_id             = module.vpc.vpc_id
   vpc_cidr           = var.vpc_cidr
   vpc_endpoint_sg_id = module.vpc.vpc_endpoint_sg_id
+  s3_prefix_list_id  = module.vpc.s3_prefix_list_id
   service_port       = var.service_port
   alb_ingress_port   = var.alb_listener_port
   alb_ingress_cidrs  = var.alb_ingress_cidrs

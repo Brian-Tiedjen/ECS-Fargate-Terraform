@@ -14,6 +14,10 @@ variable "vpc_endpoint_sg_id" {
   type = string
 }
 
+variable "s3_prefix_list_id" {
+  type = string
+}
+
 variable "service_port" {
   type    = number
   default = 80
