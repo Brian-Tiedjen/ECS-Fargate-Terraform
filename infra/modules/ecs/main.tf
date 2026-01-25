@@ -1,7 +1,6 @@
 #Create ECS Cluster
 resource "aws_ecs_cluster" "ecs_cluster" {
   name = var.cluster_name
-  # CKV_AWS_65: enable container insights on ECS cluster
   setting {
     name  = "containerInsights"
     value = "enabled"
