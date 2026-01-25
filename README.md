@@ -21,16 +21,18 @@ Key capabilities include:
 - IAM task execution role and task role (least-privilege intent)
 - Remote Terraform state stored in S3 (configured in CI)
 - ECS service autoscaling (target tracking for CPU and memory)
+- ECS cluster container insights enabled
 - Structured monitoring/alerting beyond basic ALB alarms
 - CI/CD integration with GitHub Actions (plan/apply/build/push/deploy)
 - GitHub Environments required reviewer gates (configured in GitHub UI settings)
 - Policy-as-code checks in CI via Conftest (OPA)
+- Static IaC checks in CI with TFLint and Checkov
 - Module-based infrastructure design
 
 Centralized logging:
 - ALB access logs (S3)
 - VPC Flow Logs (reject only)
-- CloudTrail (S3)
+- CloudTrail (S3 + SNS notifications)
 - CloudWatch Logs for app and VPC flow logs
 
 ## Module Versions
@@ -44,6 +46,7 @@ Centralized logging:
 Environment-specific deployment steps live under `infra/envs/{dev,stage,prod}`.
 Note: ALB deletion protection is disabled to allow clean teardown.  
 Note: The logs S3 bucket uses `force_destroy = true` for demo convenience.
+Note: CloudWatch log retention is set to 90 days for demo convenience.
 Note: ECR repositories use `force_delete = true` to allow clean teardown in demos.
 
 
@@ -88,6 +91,7 @@ Primary cost drivers:
 
 - Workflows are run manually via `workflow_dispatch` for now
 - Policy checks run on every plan using Conftest against the Terraform plan JSON
+- Static checks run on every plan using TFLint and Checkov
 - Dev: plan only (no apply)
 - Staging: plan + apply, then build/push and deploy
 - Prod: plan + apply, then build/push and deploy
