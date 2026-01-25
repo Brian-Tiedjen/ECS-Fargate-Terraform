@@ -106,3 +106,16 @@ resource "aws_nat_gateway" "nat_gateway" {
     Environment = var.environment
   }
 }
+
+# CKV2_AWS_12: restrict default VPC security group
+resource "aws_default_security_group" "default" {
+  vpc_id                 = aws_vpc.vpc.id
+  revoke_rules_on_delete = true
+  ingress                = []
+  egress                 = []
+
+  tags = {
+    Name        = "${var.environment}-default-sg"
+    Environment = var.environment
+  }
+}
