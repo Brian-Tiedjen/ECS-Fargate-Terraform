@@ -54,7 +54,7 @@ Key capabilities include:
 Centralized logging:
 - ALB access logs (S3)
 - VPC Flow Logs (reject only)
-- CloudTrail (multi-region, log file validation, S3 + SNS notifications)
+- CloudTrail (multi-region, log file validation, S3 + SNS topic for notifications)
 - CloudWatch Logs for app and VPC flow logs
 - Logs bucket hardening (encryption, versioning, ownership controls, public access block, lifecycle policy)
 
@@ -135,6 +135,14 @@ Primary cost drivers:
 - Apply and deploy require GitHub environment approvals
 - CI includes an ECR bootstrap check: if the repo exists but is not in state, it is imported; if it does not exist, Terraform creates it on apply
 - Staging and production teardown workflows are separate and isolated
+
+## CI/CD Timings (Most Recent)
+
+- Dev (plan only): 53s
+- Staging build (full pipeline): 5m 7s
+- Prod build (full pipeline): 5m 9s
+- Teardown staging: 3m 8s
+- Teardown prod: 4m 8s
 
 ## Screenshots
 - Staging plan waiting for required reviewer approval in the CI pipeline
