@@ -13,12 +13,7 @@ data "aws_region" "current" {}
 
 locals {
   private_subnet_cidrs = [for subnet in values(var.private_subnets) : subnet.cidr]
-  interface_endpoints = toset([
-    "ecr.api",
-    "ecr.dkr",
-    "logs",
-    "sts",
-  ])
+  interface_endpoints  = toset(["ecr.api", "ecr.dkr", "logs", "sts", ])
 }
 
 #Deploy the private subnets
@@ -63,12 +58,7 @@ resource "aws_route_table" "public_route_table" {
 
 #Create Private Route Table
 resource "aws_route_table" "private_route_table" {
-  vpc_id     = aws_vpc.vpc.id
-  depends_on = [aws_nat_gateway.nat_gateway]
-  route {
-    cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = aws_nat_gateway.nat_gateway.id
-  }
+  vpc_id = aws_vpc.vpc.id
 
   tags = {
     Name        = "${var.environment}_private_route_table"
@@ -97,26 +87,6 @@ resource "aws_internet_gateway" "internet_gateway" {
   vpc_id = aws_vpc.vpc.id
   tags = {
     Name        = "${var.environment}_internet_gateway"
-    Environment = var.environment
-  }
-}
-
-#Create EIP for NAT Gateway
-resource "aws_eip" "nat_gateway_eip" {
-  depends_on = [aws_internet_gateway.internet_gateway]
-  tags = {
-    Name        = "${var.environment}_nat_gateway_eip"
-    Environment = var.environment
-  }
-}
-
-#Create NAT Gateway
-resource "aws_nat_gateway" "nat_gateway" {
-  allocation_id = aws_eip.nat_gateway_eip.id
-  subnet_id     = aws_subnet.public_subnets[sort(keys(aws_subnet.public_subnets))[0]].id
-
-  tags = {
-    Name        = "${var.environment}_nat_gateway"
     Environment = var.environment
   }
 }
@@ -159,7 +129,7 @@ resource "aws_vpc_endpoint" "interface" {
   }
 }
 
-#Create S3 Gateway Endpoint (for ECR layers)
+#Create S3 Gateway Endpoint
 resource "aws_vpc_endpoint" "s3" {
   vpc_id            = aws_vpc.vpc.id
   vpc_endpoint_type = "Gateway"

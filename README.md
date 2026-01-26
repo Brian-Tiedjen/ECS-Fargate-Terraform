@@ -2,9 +2,29 @@
 
 ## Architecture summary
 
-Public ALB → ECS Fargate (private subnets) → NAT Gateway → Internet Gateway
+Public ALB → ECS Fargate (private subnets) → VPC endpoints (ECR/Logs/STS) + S3 gateway endpoint
 
 - This architecture implements a fault-tolerant, scalable web tier using native AWS patterns.
+
+## Network flow (at a glance)
+
+```text
+Internet users
+     |
+     v
+Public ALB (public subnets)
+     |
+     v
+ECS tasks (private subnets, no public IPs)
+  +--> VPC endpoints: ECR API/DKR, Logs, STS (HTTPS)
+  +--> S3 gateway endpoint (ECR layers / S3 access)
+  +--> DNS + task metadata (inside VPC)
+  x--> No outbound internet path (no NAT)
+```
+
+## Network write-up
+
+Requests enter through the public ALB, which is the only internet-facing component. The ALB forwards traffic to ECS tasks running in private subnets with no public IPs. Those tasks cannot reach the public internet because their security group egress is restricted to VPC interface endpoints, the S3 gateway endpoint, DNS within the VPC, and the ECS task metadata endpoint. This keeps the data plane private while still allowing ECS to pull images from ECR, emit logs to CloudWatch, and use STS without any outbound internet path.
 
 ## What This Project Demonstrates
 
@@ -12,18 +32,19 @@ This project provisions a production-style AWS network and container stack using
 
 Key capabilities include:
 - Multi-AZ VPC with public and private subnets
-- Internet Gateway with single NAT Gateway (cost-aware design)
+- Internet Gateway for public subnets
 - Public Application Load Balancer spanning multiple AZs
 - ECS Fargate service in private subnets behind the ALB
-- Task definition with immutable image tags
+- ECS task egress via VPC endpoints (no outbound internet)
+- ECR repository with immutable tags, scan on push, and lifecycle cleanup
 - Security group isolation between ALB and ECS tiers
 - Deployment circuit breaker for safe rollbacks
 - IAM task execution role and task role (least-privilege intent)
 - Remote Terraform state stored in S3 (configured in CI)
 - ECS service autoscaling (target tracking for CPU and memory)
 - ECS cluster container insights enabled
-- Container image hardening (non-root user + healthcheck)
-- Structured monitoring/alerting beyond basic ALB alarms
+- Runtime hardening (non-root user, healthcheck, read-only root filesystem)
+- Monitoring/alerting: ALB 5xx/unhealthy + ECS CPU/memory alarms, SNS notifications, optional dashboard
 - CI/CD integration with GitHub Actions (plan/apply/build/push/deploy)
 - GitHub Environments required reviewer gates (configured in GitHub UI settings)
 - Policy-as-code checks in CI via Conftest (OPA)
@@ -33,8 +54,9 @@ Key capabilities include:
 Centralized logging:
 - ALB access logs (S3)
 - VPC Flow Logs (reject only)
-- CloudTrail (S3 + SNS notifications)
+- CloudTrail (multi-region, log file validation, S3 + SNS notifications)
 - CloudWatch Logs for app and VPC flow logs
+- Logs bucket hardening (encryption, versioning, ownership controls, public access block, lifecycle policy)
 
 ## Module Versions
 
@@ -45,6 +67,7 @@ Centralized logging:
 ## Deployment Notes
 
 Environment-specific deployment steps live under `infra/envs/{dev,stage,prod}`.
+Backend config (S3 bucket/key/region) is injected via CI during `terraform init`.
 Note: ALB deletion protection is disabled to allow clean teardown.  
 Note: The logs S3 bucket uses `force_destroy = true` for demo convenience.
 Note: CloudWatch log retention is set to 90 days for demo convenience.
@@ -72,25 +95,25 @@ This project is designed for short-lived demo deployments and learning purposes,
 
 Primary cost drivers:
 - Application Load Balancer
-- NAT Gateway
+- VPC interface endpoints
 - Fargate tasks
 - CloudWatch logs and alarms
 - S3 storage
 
 ## Assumptions & Tradeoffs
 
-- Single NAT Gateway (cost-aware, single-AZ dependency)
 - Single region deployment
 - Environments are isolated per VPC and state (dev/stage/prod use separate backends)
 - Logs bucket uses `force_destroy` and short retention for demo convenience
 - Health checks use `GET /health` on the app
+- ECS tasks use endpoint-only egress (no outbound internet)
 
 ## Security Considerations
 
 - ECS tasks are deployed exclusively in private subnets
 - No inbound internet access to compute resources
 - ALB is the only public-facing component
-- Security groups enforce ALB → ECS traffic only
+- Security groups restrict ECS ingress to ALB only; ECS egress is limited to VPC endpoints, S3 gateway, DNS, and task metadata
 - IAM roles scoped to ECS execution + app needs only
 - VPC Flow Logs capture rejected traffic for analysis
 - Default VPC security group is locked down
@@ -138,7 +161,6 @@ The goals of modularization are to:
 - Not intended for production or sensitive workloads.
 
 ## Future Updates
-- GitHub Actions OIDC auth.
 - AWS Budgets + alert.
 - CloudWatch log metric filters + alarms.
 - Terraform‑docs + pre‑commit.
