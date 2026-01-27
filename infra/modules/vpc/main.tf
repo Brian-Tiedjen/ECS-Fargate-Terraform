@@ -105,7 +105,13 @@ resource "aws_security_group" "vpc_endpoints" {
     cidr_blocks = local.private_subnet_cidrs
   }
 
-  egress = []
+  egress {
+    description = "Allow response traffic to private subnets"
+    from_port   = 1024
+    to_port     = 65535
+    protocol    = "tcp"
+    cidr_blocks = local.private_subnet_cidrs
+  }
 
   tags = {
     Name        = "${var.environment}-vpc-endpoints-sg"
